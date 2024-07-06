@@ -1,0 +1,35 @@
+name: Test Application
+on:
+  push:
+    branches:
+      - main
+jobs:
+  test:
+    runs-on: ubuntu-latest # runner
+    steps:
+      - name: Get code # download the code to the runner
+        uses: actions/checkout@v3
+      - name: Install Node.js # install Node.js
+        uses: actions/setup-node@v3
+        with:
+          node-version: "18"
+      - name: Install dependencies # install dependencies
+        run: npm ci
+      - name: Run tests # run tests
+        run: npm test
+  # the deploy job and the test job are running in parallel
+  deploy:
+    runs-on: ubuntu-latest # Each job has its own isolated environment - the runner
+    steps:
+      - name: Get code
+        uses: actions/checkout@v3
+      - name: Install Node.js
+        uses: actions/setup-node@v3
+        with:
+          node-version: "18"
+      - name: Install dependencies
+        run: npm ci
+      - name: Build Project
+        run: npm run build
+      - name: Deploy
+        run: echo "Deploying the project"
